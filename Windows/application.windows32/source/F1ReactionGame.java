@@ -30,6 +30,8 @@ boolean finalResult = false;
 
 boolean jump = false;
 
+GameProgression a;
+
 public void setup ()
 {
   frameRate(200);
@@ -37,24 +39,26 @@ public void setup ()
   
   
   print("Game Started!\n");
+  
+  a = new GameProgression();
 }
 
 public void draw ()
 {
   background(255);
   
-  if(menu == true && turnOn == false && waitingLightsOff == false)
+  if(a.getState() == "menu")
      printInitialMenu();
   
-  else if(menu == false && turnOn == true && waitingLightsOff == false)
+  else if(a.getState() == "turnOn")
   {
-    end = millis();
+    a.getNewEnd();
   
-    if(end - start >= 1000)
+    if(a.getElapsedTime() >= 1000)
     {
-      light++;
+      a.moreLight();
     
-      start = millis();
+      a.getNewStart();
     }
   
     for(int x = 150, lvl = 0, y = 500; x <= 650; x += 125)
@@ -63,7 +67,7 @@ public void draw ()
     
       rect(x, y, 75, 300, 15, 15, 15, 15);
     
-      if(lvl > light - 1 && lvl < 6)
+      if(lvl > a.light - 1 && lvl < 6)
         fill(100);
       else
         fill(255, 0, 0);
@@ -76,24 +80,22 @@ public void draw ()
       
       //print("lvl = " + lvl + "\n");
     }
-    if(light == 5)
-    {
-      turnOn = !turnOn;
-        
-      start = millis();
+    if(a.getLights() == 5)
+    {     
+      a.getNewStart();
        
-      waitingLightsOff = !waitingLightsOff;
+      a.nextState();
     }
   }
-  else if(menu == false && turnOn == false && waitingLightsOff == true)
+  else if(a.getState() == "waitingLightsOff")
   {
-    end = millis();
+    a.getNewEnd();
     
-    if(end - start <= finish)
+    if(a.getElapsedTime() <= a.getFinish())
     {
       //print("Time elapsed = " + (end - start) + " ms\n");
       
-      for(int x = 150, y =500; x <= 650; x += 125)
+      for(int x = 150, y = 500; x <= 650; x += 125)
       {
         fill(10);
     
@@ -110,24 +112,22 @@ public void draw ()
     {
       //print("LIghts OUT!\n");
       
-      waitingLightsOff = !waitingLightsOff;
+      a.nextState();
       
-      waitingPlayerReaction = !waitingPlayerReaction;
+      a.resetLights();
       
-      light = 0;
-      
-      start = millis();
+      a.getNewStart();
     }
   }
-  else if(jump == true)
+  else if(a.getState() == "jump")
     jumpStart();
-  else if(menu == false && turnOn == false && waitingLightsOff == false && waitingPlayerReaction == true)
+  else if(a.getState() == "waitingPlayerReaction")
   {
-    end = millis();
+    a.getNewEnd();
     
     printTimeElapsed();
   }
-  else if(menu == false && turnOn == false && waitingLightsOff == false && waitingPlayerReaction == false && finalResult == true)
+  else if(a.getState() == "finalResult")
   {
     printFinalResult();
   }
@@ -136,55 +136,35 @@ public void draw ()
 
 public void keyPressed()
 {
-  if(key == ' ' && menu == true && turnOn == false && waitingLightsOff == false && waitingPlayerReaction == false)
+  if(key == ' ' && a.getState() == "menu")
   {
-    start = millis();
+    a.getNewStart();
     
-    menu = !menu;
+    a.nextState();
     
-    turnOn = !turnOn;
-    
-    finish = PApplet.parseInt(random(800, 3000));
+    a.getNewFinish();
     
     //print("Finish = " + finish + " ms\n");
   }
-  else if(key == ' ' && menu == false && turnOn == false && waitingLightsOff == false && waitingPlayerReaction == true)
+  else if(key == ' ' && a.getState() == "waitingPlayerReaction")
   {
     result = diff;
     
-    waitingPlayerReaction = !waitingPlayerReaction;
-    
-    finalResult = !finalResult;
+    a.nextState();
   }
-  else if(key == ' ' && (turnOn == true || waitingLightsOff == true))
+  else if(key == ' ' && (a.getState() == "turnOn" || a.getState() == "waitingLightsOff"))
   {
-    jump = !jump;
-    
-    turnOn = false;
-    
-    waitingLightsOff = false;
+    a.setJumpStartState();
   }
-  else if(key == ' ' && jump == true)
+  else if(key == ' ' && a.getState() == "jump")
   {
-    menu = true;
-
-    turnOn = false;
-
-    waitingLightsOff = false;
-
-    waitingPlayerReaction = false;
-
-    finalResult = false;
-
-    jump = !jump;
+    a.nextState();
     
-    light = 0;
+    a.resetLights();
   }
-  else if(key == ' ' && menu == false && turnOn == false && waitingLightsOff == false && waitingPlayerReaction == false && finalResult == true)
+  else if(key == ' ' && a.getState() == "finalResult")
   {
-    finalResult = !finalResult;
-    
-    menu = !menu;
+    a.nextState();
   }
 }
 
@@ -214,7 +194,7 @@ public void printTimeElapsed()
 {
   textSize(72);
   
-  diff = 1.0f * (end - start) / 1000;
+  diff = a.getDiff();
   
   text(diff, width / 2 - 100, 200);
   
@@ -232,6 +212,8 @@ public void printTimeElapsed()
     
     ellipse(x, y + 100, 64, 64);
   }
+  
+  //saveFrame("frame###.jpg");
 }
 
 public void printFinalResult()
@@ -268,7 +250,7 @@ public void jumpStart()
   
   rectMode(CENTER);
   
-  for(int x = 150, y =500; x <= 650; x += 125)
+  for(int x = 150, y = 500; x <= 650; x += 125)
   {
     fill(10);
     
@@ -299,6 +281,96 @@ public void printVariablesState ()
   print("turnOn = " + turnOn + "\n");
   
   print("waitingLightsOff = " + waitingLightsOff + "\n\n\n\n");
+}
+class GameProgression
+{
+  int stateIndex;
+  
+  String[] states = {"menu", "turnOn", "waitingLightsOff", "waitingPlayerReaction", "finalResult", "jump"};
+  
+  int light, start, end, finish;
+  
+  float diff, result;
+  
+  GameProgression () 
+  {
+    stateIndex = 0;
+       
+    light = 0;    
+  }
+  
+  public boolean checkState(String toTest)
+  {
+    for(int i = 0; i < states.length; i++)
+      if(toTest == states[i])
+        return true;
+        
+    return false;    
+  }
+  
+  public void moreLight()
+  {
+    light++;
+  }
+  
+  public String getState()
+  {
+    return states[stateIndex];
+  }
+  
+  public void nextState()
+  {
+    if(stateIndex >= 4)
+      stateIndex = 0;
+    else
+      stateIndex++;
+  }
+  
+  public int getElapsedTime()
+  {
+    return end - start;
+  }
+  
+  public void getNewEnd()
+  {
+    end = millis();
+  }
+  
+  public void getNewStart()
+  {
+    start = millis();
+  }
+  
+  public void getNewFinish()
+  {
+    finish = PApplet.parseInt(random(800, 3000));
+  }
+  
+  public int getLights()
+  {
+    return light;
+  }
+  
+  public int getFinish()
+  {
+    return finish;
+  }
+  
+  public void resetLights()
+  {
+    light = 0;
+  }
+  
+  public float getDiff()
+  {
+    return 1.0f * (end - start) / 1000;
+  }
+  
+  public void setJumpStartState()
+  {
+    stateIndex = 5;
+  }
+  
 }
   public void settings() {  size(800, 800); }
   static public void main(String[] passedArgs) {
