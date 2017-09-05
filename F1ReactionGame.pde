@@ -1,19 +1,3 @@
-int light = 0, start, end, finish;
-
-float diff, result;
-
-boolean menu = true;
-
-boolean turnOn = false;
-
-boolean waitingLightsOff = false;
-
-boolean waitingPlayerReaction = false;
-
-boolean finalResult = false;
-
-boolean jump = false;
-
 GameProgression a;
 
 void setup ()
@@ -25,6 +9,10 @@ void setup ()
   print("Game Started!\n");
   
   a = new GameProgression();
+  
+  a.loadPlayers();
+  
+  a.sortPlayers();
 }
 
 void draw ()
@@ -132,7 +120,7 @@ void keyPressed()
   }
   else if(key == ' ' && a.getState() == "waitingPlayerReaction")
   {
-    result = diff;
+    a.result = a.diff;
     
     a.nextState();
   }
@@ -156,7 +144,7 @@ void printInitialMenu()
 {
   textSize(32);
   
-  text("Press SPACE to try! Press SPACE again to Reset", 40, 200);
+  text("Press SPACE to try! Press SPACE again to Reset", 40, 50);
   
   rectMode(CENTER);
   
@@ -178,9 +166,9 @@ void printTimeElapsed()
 {
   textSize(72);
   
-  diff = a.getDiff();
+  a.diff = a.getDiff();
   
-  text(diff, width / 2 - 100, 200);
+  text(a.diff, width / 2 - 100, 200);
   
   rectMode(CENTER);
   
@@ -206,7 +194,7 @@ void printFinalResult()
   
   text("You took:\n", width / 2 - 110, 200);
   
-  text(result + "ms\n", width / 2 - 100, 300);
+  text(a.result + "ms\n", width / 2 - 100, 300);
   
   rectMode(CENTER);
   
@@ -252,17 +240,11 @@ void jumpStart()
 
 void printVariablesState ()
 {
-  print("\n\n\nlight = " + light + "\n");
+  print("\n\n\nlight = " + a.light + "\n");
   
-  print("start = " + start + " ms\n");
+  print("start = " + a.start + " ms\n");
   
-  print("end = " + end + " ms\n");
+  print("end = " + a.end + " ms\n");
   
-  print("finish = " + finish + " ms\n");
-  
-  print("menu = " + menu + "\n");
-  
-  print("turnOn = " + turnOn + "\n");
-  
-  print("waitingLightsOff = " + waitingLightsOff + "\n\n\n\n");
+  print("finish = " + a.finish + " ms\n");
 }
