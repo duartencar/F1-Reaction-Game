@@ -18,7 +18,7 @@ class GameProgression
        
     light = 0;
     
-    p = new Player[0];
+    p = new Player[1];
   }
   
   void loadPlayers()
@@ -30,6 +30,12 @@ class GameProgression
       components = split(fileLines[i], " ");
       
       Player a = new Player(components[0], int(components[1]), components[2]);
+      
+      print("Name: " + components[0] + "\n");
+      
+      print("Time: " + int(components[1]) / 1000 + " ms\n");
+      
+      print("Date: " + components[2] + "\n");
       
       append(p, a);
     }
@@ -128,7 +134,7 @@ class GameProgression
     
     for(int i = 0; i < p.length - 1; i++)
     {
-      for(int j = i + 1; j < p.length; j++)
+      for(int j = i + 1; j < p.length - 1; j++)
       {
         if(p[j].getTime() < p[i].getTime())
         {
@@ -156,7 +162,7 @@ class GameProgression
     }
   }
   
-  Player[] getBest()
+  /*Player[] getBest()
   {
     Player[] v = new Player[3];
     
@@ -167,5 +173,17 @@ class GameProgression
     append(v, p[2]);
     
     return v;
+  }*/
+  
+  void printAllPLayers()
+  {
+    for(int i = 1; i < p.length; i++)
+    {
+      print("Name: " + p[i].name + "\n");
+      
+      print("Time: " + p[i].time / 1000 + " ms\n");
+      
+      print("Date: " + p[i].date + "\n");
+    }
   }
 }

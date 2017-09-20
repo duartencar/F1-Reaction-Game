@@ -1,8 +1,10 @@
 GameProgression a;
 
+int i = 0;
+
 void setup ()
 {
-  frameRate(200);
+  frameRate(999);
  
   size(800, 800);
   
@@ -10,9 +12,11 @@ void setup ()
   
   a = new GameProgression();
   
-  a.loadPlayers();
+  //a.loadPlayers();
   
-  a.sortPlayers();
+  //a.sortPlayers();
+  
+  //a.printAllPLayers();
 }
 
 void draw ()
@@ -142,9 +146,13 @@ void keyPressed()
 
 void printInitialMenu()
 {
+  //Player[] s = a.getBest();
+  
   textSize(32);
   
-  text("Press SPACE to try! Press SPACE again to Reset", 40, 50);
+  textAlign(CENTER, CENTER);
+  
+  text("Press SPACE to try! Press SPACE again to Reset", 400, 200);
   
   rectMode(CENTER);
   
@@ -184,7 +192,8 @@ void printTimeElapsed()
     
     ellipse(x, y + 100, 64, 64);
   }
-  
+  i++;
+  print(i + "\n");
   //saveFrame("frame###.jpg");
 }
 
@@ -192,9 +201,11 @@ void printFinalResult()
 {
   textSize(48);
   
-  text("You took:\n", width / 2 - 110, 200);
+  textAlign(CENTER, CENTER);
   
-  text(a.result + "ms\n", width / 2 - 100, 300);
+  text("You took:\n", width / 2, 200);
+  
+  text(a.result + "s\n", width / 2, 300);
   
   rectMode(CENTER);
   
@@ -211,14 +222,18 @@ void printFinalResult()
     ellipse(x, y + 100, 64, 64);
   }
   
-  text("Press SPACE again\n", width / 3 - 100, height - 48);
+  text("Press SPACE again\n", width / 2, height - 48);
+  
+  i = 0;
 }
 
 void jumpStart()
 {
   textSize(48);
   
-  text("JUMP START!\n", width / 2 - 110, 200);
+  textAlign(CENTER, CENTER);
+  
+  text("JUMP START!\n", width / 2, 200);
   
   rectMode(CENTER);
   
@@ -235,7 +250,7 @@ void jumpStart()
     ellipse(x, y + 100, 64, 64);
   }
   
-  text("Press SPACE again\n", width / 3 - 100, height - 48);
+  text("Press SPACE again\n", width / 2, height - 48);
 }
 
 void printVariablesState ()
