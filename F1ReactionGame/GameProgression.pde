@@ -124,52 +124,37 @@ class GameProgression
       p.show();
   }
   
-  /*void sortPlayers()
+  void switchPositions (int firstIndex, int secondIndex)
   {
-    String nameAux, dateAux;
+    Player a = players.get(firstIndex);
     
-    int timeAux;
+    players.set(firstIndex, players.get(secondIndex));
     
-    for(int i = 0; i < p.length - 1; i++)
+    players.set(secondIndex, a);
+  }
+  
+  void sortPlayers()
+  {
+    Player a, b;
+    
+    for(int i  = 0; i < players.size() - 1; i++)
     {
-      for(int j = i + 1; j < p.length - 1; j++)
+      a = players.get(i);
+      
+      for(int k = i + 1; i < players.size(); i++)
       {
-        if(players[j].getTime() < players[i].getTime())
-        {
-          nameAux = p[i].getName();
-          
-          timeAux = p[i].getTime();      //i to aux
-          
-          dateAux = p[i].getDate();
-          
-          
-          p[i].setName(p[j].getName());
-          
-          p[i].setTime(p[j].getTime());  //j to i
-          
-          p[i].setDate(p[j].getDate());
-          
-          
-          p[j].setName(nameAux);
-          
-          p[j].setTime(timeAux);         //aux to j
-          
-          p[j].setDate(dateAux);
-        }
+        b = players.get(k);
+        
+        if(b.getTime() < a.getTime())
+          switchPositions(i, k);
       }
     }
-  }*/
+  }
   
-  /*Player[] getBest()
+  Player getPlayerAt(int index)
   {
-    Player[] v = new Player[3];
+    Player a = players.get(index);
     
-    append(v, p[0]);
-    
-    append(v, p[1]);
-    
-    append(v, p[2]);
-    
-    return v;
-  }*/
+    return a;
+  }
 }

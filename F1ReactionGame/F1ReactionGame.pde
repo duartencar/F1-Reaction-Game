@@ -14,11 +14,7 @@ void setup ()
     
   a.loadPlayers();
   
-  a.printAllPlayers();
-  
-  //a.sortPlayers();
-  
-  //a.printAllPLayers();
+  a.sortPlayers();
 }
 
 void draw ()
@@ -148,13 +144,22 @@ void keyPressed()
 
 void printInitialMenu()
 {
-  //Player[] s = a.getBest();
+  Player b;
   
   textSize(32);
   
   textAlign(CENTER, CENTER);
   
-  text("Press SPACE to try! Press SPACE again to Reset", 400, 200);
+  text("Press SPACE to try! Press SPACE again to Reset", 400, 50);
+  
+  textSize(20);
+  
+  for(int i = 0; i < 3; i++)
+  {
+    b = a.getPlayerAt(i);
+    
+    text((i+1) + " - " + b.getName() + " -> " + str(b.getTime()) + "ms", 400, 150 + 50*i);
+  }
   
   rectMode(CENTER);
   
